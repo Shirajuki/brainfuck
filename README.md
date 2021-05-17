@@ -1,4 +1,4 @@
-## Brainfuck interpreter using Lex (Flex)
+## Brainfuck interpreter and encoder using Lex (Flex)
 
 ### Usage
 1. Clone the repository `https://github.com/Shirajuki/brainfuck-interpreter.git`
