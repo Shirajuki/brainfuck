@@ -10,5 +10,5 @@ make
 
 3. Run the ELF binary
 ```
-./bfc < test_file
+./bfint < test_file
 ```
