@@ -3,7 +3,7 @@
 ### Usage
 1. Clone the repository `https://github.com/Shirajuki/brainfuck-interpreter.git`
 
-2. Install
+2. Compile the lex program
 ```sh
 make
 ```
