@@ -15,9 +15,10 @@ int ptr_loc = 0;
 int ptr_mov = 0;
 %}
 
-/* definitions */
-WHITESPACE   [\t\n\r\v\ ]+
 %%
+\r                     { return '\r'; }
+\n                     { return '\n'; }
+\t                     { return '\t'; }
 .                      { return yytext[0]; }
 <<EOF>>                { return END_OF_FUCK; }
 %%
