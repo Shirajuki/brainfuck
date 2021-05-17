@@ -1,16 +1,16 @@
 # Makefile for brainfuck - lex
-CC = gcc 
+CC = gcc
+YACC = bison
 LEX = flex
-yacc = bison
 CFLAGS = -std=c99 -g
 
-all: bfc
+all: bfint
 
-lex.yy.c: bfc.l
-	lex bfc.l
-
-bfc: lex.yy.c 
+bfint: lex.yy.c 
 	gcc -g -o $@ $< -I. -ll
 
+lex.yy.c: bfint.l
+	lex bfint.l
+
 clean:
-	-@rm lex.yy.c bfc
+	-@rm lex.yy.c bfint
