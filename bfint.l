@@ -24,8 +24,6 @@ typedef struct n {
 	struct n **children;
 } node_t;
 void node_init(node_t *n, node_index_t type, uint64_t n_children, ...);
-void node_finalize(node_t *discard);
-void destroy_subtree(node_t *discard);
 void node_parse(node_t *node);
 
 node_t *root;
@@ -52,17 +50,6 @@ WHITESPACE   [\t\n\r\v\ ]+
 {WHITESPACE}           { /* IGNORED */ }
 .                      { /* IGNORED */ }
 %%
-/*
-> - INCREMENT_POINTER - increment the data pointer (to point to the next cell to the right).
-< - DECREMENT_POINTER - decrement the data pointer (to point to the next cell to the left).
-+ - INCREMENT_BYTE - increment (increase by one) the byte at the data pointer.
-- - DECREMENT_BYTE - decrement (decrease by one) the byte at the data pointer.
-. - OUTPUT_BYTE - output the byte at the data pointer.
-, - INPUT_BYTE - accept one byte of input, storing its value in the byte at the data pointer.
-[ - JUMP_FORWARD - if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command.
-] - JUMP_BACKWARD - if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command.
-*/
-
 /* Take the memory allocated to a node and fill it in with the given elements */
 void node_init (node_t *nd, node_index_t type, uint64_t n_children, ...)
 {
@@ -71,24 +58,6 @@ void node_init (node_t *nd, node_index_t type, uint64_t n_children, ...)
 	nd->children = (node_t **) malloc(n_children * sizeof( node_t * )); // Fill in children
 }
 
-/* Remove a node and its contents */
-void node_finalize(node_t *discard)
-{
-	free(discard->children);
-	free(discard);
-}
-
-/* Recursively remove the entire tree rooted at a node */
-void destroy_subtree(node_t *discard)
-{
-	int n_children = discard->n_children; // Get children of the node
-	for (int i = 0; i < n_children; i++) { // Loops through all children and remove it
-		if (discard->children[i] != NULL) {
-			destroy_subtree(discard->children[i]); // Recursively destroy the child node and it's children
-		}
-	}
-	node_finalize(discard); // Destroy the node
-}
 void node_parse(node_t *node)
 {
 	switch (node->type)
@@ -154,6 +123,7 @@ int main(void) {
 				root->children[nchild++] = instruction;
 				// Update jump forward
 				root->children[nchild-njumpchild-1]->n_children = njumpchild;
+				njumpchild = 0;
 			break;
 		}
 	}
@@ -164,6 +134,5 @@ int main(void) {
 		node_parse(root->children[i]);
 		i++;
 	}
-	printf("\n");
   return 0;
 }
